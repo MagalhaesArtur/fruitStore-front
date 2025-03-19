@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center" > Fruit Store </h1>
 
-## Getting Started
+<hr/>
 
-First, run the development server:
+O Projeto é requerido pela empresa Camed para a vaga de Dev Estagiário.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requisitos funcionais requeridos:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+✔️ Possuir uma senha para acesso como usuário
+vendedor e outro como administrador.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+✔️ O perfil de administrador poderá cadastrar frutas para venda na
+barraca, mas não poderá vendê-las.
 
-## Learn More
+✔️ O perfil de vendedor irá vender as frutas e poderá visualizar o relatório
+de vendas.
 
-To learn more about Next.js, take a look at the following resources:
+✔️ As frutas deverão ser cadastradas com os seguintes atributos:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+           o Nome da fruta
+  
+           o Classificação: Extra, de primeira, de segunda ou de terceira.
+  
+           o Fresca: sim ou não
+  
+           o Quantidade disponível para venda: número inteiro
+  
+           o Valor de venda.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+✔️ O relatório de vendas deverá possuir o horário da venda e o valor,
+listando individualmente os itens vendidos. Este relatório deverá ser
+acessado somente pelo vendedor.
 
-## Deploy on Vercel
+✔️ O perfil de vendedor poderá executar as seguintes operações.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+            o Vender frutas com opção de desconto nos termos de
+              porcentagem (5%, 10%, 15%, 20% ou 25%).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+            o Pesquisar as frutas disponíveis para venda
+            
+            o Filtrar frutas pelos tipos de atributos.
+
+
+
+## Tecnologias Utilizadas:
+
+✔️ Spring Boot
+✔️ JWT Token
+✔️ bcrypt
+
+
+
+
+   
+</ul><br><br>
+
+<hr>
+<p>Made with 💜 by João Artur 👋 See my <a href="https://www.linkedin.com/in/magalhesartur/">Linkedin</a></p>
