@@ -1,103 +1,144 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useState } from "react";
+import Input from "./components/Input";
+import useLogin from "@/hooks/useLogin";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth";
+import { Button } from "./components/ui/button";
+import { HashLoader } from "react-spinners";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+const Login: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const { setIsAuthenticated, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const { loading, handleLogin } = useLogin();
+  const { register, handleSubmit, reset } = useForm<FieldValues>({
+    defaultValues: {
+      login: "",
+      password: "",
+    },
+  });
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/home");
+    }
+  }, [isAuthenticated, router]);
+
+  const onSubmit: SubmitHandler<FieldValues> = async (values) => {
+    setIsLoading(true);
+
+    const { login, password } = values;
+
+    const isLoginSucess = await handleLogin(login, password);
+
+    setTimeout(() => {
+      if (isLoginSucess) {
+        setIsAuthenticated(true);
+        setIsLoading(false);
+        toast.success("Login efetuado com sucesso!");
+        router.replace("/home");
+        reset();
+        setIsLoading(false);
+      } else {
+        toast.error("Senha ou usuário/email incorretos");
+        setIsLoading(false);
+        setIsError(true);
+
+        setTimeout(() => {
+          setIsError(false);
+        }, 3000);
+      }
+    }, 1000);
+  };
+
+  if (isAuthenticated) {
+    return null;
+  } else {
+    return (
+      <div className="min-h-screen  flex items-center justify-center bg-gradient-to-r ">
+        <div className="w-[350px] md:w-[700px]  lg:w-[900px]  bg-white rounded-lg shadow-md overflow-hidden ">
+          <div className="md:flex ">
+            <div className="w-full flex justify-center items-center p-4 py-6 sm:p-6 md:p-8 bg-gradient-to-r from-[#1b1919]  to-indigo-600 text-white">
+              <h2 className="text-3xl font-bold text-center mb-4">
+                Bem Vindo!
+              </h2>
+            </div>
+            <div className="w-full p-4 py-6 sm:p-6 md:p-8">
+              <h2 className="text-2xl font-semibold text-gray-700 text-center">
+                Login
+              </h2>
+              <p className="text-sm text-gray-600 text-center">
+                Bem Vindo! Entre na sua conta.
+              </p>
+              <form
+                className="mt-8 space-y-6"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <div></div>
+                <div>
+                  <Input
+                    id="login"
+                    className={`transition-all  ${"bg-white text-black  hover:shadow-customDark border-indigo-600"} ${
+                      isError ? "border-red-600" : ""
+                    }`}
+                    disabled={loading}
+                    type="text"
+                    autoComplete="on"
+                    {...register("login", { required: true })}
+                    placeholder="Digite o seu login..."
+                  />
+                </div>
+                <div>
+                  <Input
+                    id="password"
+                    className={`transition-all  ${"bg-white text-black  hover:shadow-customDark border-indigo-600"} ${
+                      isError ? "border-red-600" : ""
+                    }`}
+                    disabled={loading}
+                    type="password"
+                    autoComplete="off"
+                    {...register("password", { required: true })}
+                    placeholder="Digite a sua senha..."
+                  />
+                </div>
+                <div className="flex items-center justify-between"></div>
+                <div>
+                  <Button
+                    type="submit"
+                    className="
+                    outline-0
+                    transition-all hover:shadow-customDark w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2  focus:ring-purple-500"
+                  >
+                    {loading || isLoading ? (
+                      <HashLoader size={25} color="#36d7b7" />
+                    ) : (
+                      "Login"
+                    )}
+                  </Button>
+                </div>
+              </form>
+              <p className="mt-2 text-center text-sm text-gray-600">
+                Novo usuário?{" "}
+                <a
+                  onClick={() => {
+                    router.replace("/register");
+                  }}
+                  className="font-medium cursor-pointer text-indigo-600 hover:text-indigo-500"
+                >
+                  Signup
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+      </div>
+    );
+  }
+};
+
+export default Login;
